@@ -39,3 +39,6 @@ jobs:
 
       - name: Print image URL
         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
+
+
+        
