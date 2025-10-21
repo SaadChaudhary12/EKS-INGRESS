@@ -2,7 +2,8 @@ name: CI/CD - Build & Deploy to EKS
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 env:
   AWS_REGION: us-east-1
@@ -38,19 +39,3 @@ jobs:
 
       - name: Print image URL
         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
-
-
-
-      # - name: Set up kubectl
-      #   uses: azure/setup-kubectl@v3
-      #   with:
-      #     version: '1.27.0'
-
-      # - name: Update kubeconfig
-      #   run: |
-      #     aws eks update-kubeconfig --region $AWS_REGION --name Saad-EKS-Cluster
-
-      # - name: Deploy to k8s (update image)
-      #   run: |
-      #     kubectl set image deployment/app-deployment app-container=${ECR_REPO}:${IMAGE_TAG} --namespace default
-      #     kubectl rollout status deployment/app-deployment --namespace default -w
