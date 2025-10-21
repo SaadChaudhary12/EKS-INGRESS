@@ -1,0 +1,78 @@
+# ################################################################################################################################################################
+# # ZIP APP_LT.PY INTO S3 BUCKET 
+# ################################################################################################################################################################
+
+# name: Upload App to S3
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   upload:
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       id-token: write
+#       contents: read
+
+#     steps:
+#       - name: Checkout repo
+#         uses: actions/checkout@v4
+
+#       - name: Zip application with commit SHA
+#         run: |
+#           COMMIT_SHA=$(git rev-parse --short HEAD)
+#           ZIP_NAME="app_${COMMIT_SHA}.zip"
+#           echo "ZIP_NAME=${ZIP_NAME}" >> $GITHUB_ENV
+#           zip -r $ZIP_NAME src
+
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-region: us-east-1
+#           role-to-assume: arn:aws:iam::489994096722:role/Saad-Trustpolicy-Role
+
+#       - name: Upload to S3
+#         run: |
+#           aws s3 cp $ZIP_NAME s3://saad-terraform-bucket/$ZIP_NAME
+#           echo "Uploaded $ZIP_NAME"
+
+#       - name: Update Launch Template user data with latest version 
+#         run: |
+#           sudo apt-get update -y
+#           sudo apt-get install -y jq
+
+#           LT_NAME="Saad-App-template"
+
+#           USER_DATA=$(echo '#!/bin/bash
+#           sudo yum update -y
+#           sudo yum install -y python3 git
+#           sudo dnf install -y unzip awscli python3 pip awscli
+#           sudo dnf install -y mariadb105-server
+
+#           LATEST_ZIP=$(aws s3 ls s3://saad-terraform-bucket/ --recursive | sort | tail -n 1 | awk "{print \$4}")
+#           aws s3 cp s3://saad-terraform-bucket/$LATEST_ZIP /home/ec2-user/app.zip
+
+#           unzip -o app.zip
+#           pip3 install boto3 utils flask pymysql
+#           cd /home/ec2-user/src
+#           nohup python3 app_lt.py > app.log 2>&1 &' | base64 -w 0)
+
+#           JSON=$(jq -n --arg ud "$USER_DATA" '{UserData: $ud}')
+#           aws ec2 create-launch-template-version \
+#             --launch-template-name $LT_NAME \
+#             --source-version '$Latest' \
+#             --launch-template-data "$JSON"
+
+
+#       - name: Start Auto Scaling instance refresh
+#         run: |
+#           ASG_NAME=$(aws autoscaling describe-auto-scaling-groups \
+#             --query "AutoScalingGroups[?contains(AutoScalingGroupName, 'Saad-App-ASG')].AutoScalingGroupName" \
+#             --output text)
+
+#           aws autoscaling start-instance-refresh \
+#             --auto-scaling-group-name $ASG_NAME \
+#             --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 60}'

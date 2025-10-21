@@ -1,0 +1,50 @@
+name: CI/CD - Build & Deploy to EKS
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPO: 489994096722.dkr.ecr.us-east-1.amazonaws.com/task2-app
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::489994096722:role/Saad-Trustpolicy-Role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: ecr_login
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ env.ECR_REPO%/* }}
+
+      - name: Build, tag and push image
+        run: |
+          docker build -t $ECR_REPO:$IMAGE_TAG .
+          docker push $ECR_REPO:$IMAGE_TAG
+
+      # - name: Set up kubectl
+      #   uses: azure/setup-kubectl@v3
+      #   with:
+      #     version: '1.27.0'
+
+      # - name: Update kubeconfig
+      #   run: |
+      #     aws eks update-kubeconfig --region $AWS_REGION --name Saad-EKS-Cluster
+
+      # - name: Deploy to k8s (update image)
+      #   run: |
+      #     kubectl set image deployment/app-deployment app-container=${ECR_REPO}:${IMAGE_TAG} --namespace default
+      #     kubectl rollout status deployment/app-deployment --namespace default -w

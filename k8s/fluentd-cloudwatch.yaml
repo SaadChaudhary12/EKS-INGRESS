@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: kube-system
+data:
+  fluent.conf: |
+    <source>
+      @type tail
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd-posFile.pos
+      tag kubernetes.*
+      format json
+      read_from_head true
+    </source>
+
+    <match kubernetes.**>
+      @type cloudwatch_logs
+      log_group_name fluentd-k8s
+      log_stream_name {host}
+      auto_create_stream true
+    </match>
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::489994096722:role/eks-fluentd-role-Saad-EKS-Cluster
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-cloudwatch
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-cloudwatch
+  template:
+    metadata:
+      labels:
+        name: fluentd-cloudwatch
+    spec:
+      serviceAccountName: fluentd
+      tolerations:
+        - operator: "Exists"
+      containers:
+        - name: fluentd
+          image: public.ecr.aws/aws-observability/aws-for-fluentd:stable
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: fluentd-config
+              mountPath: /fluentd/etc
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config

@@ -1,0 +1,37 @@
+locals {
+  name                = "Saad-Vpc"
+  region              = "us-east-1"
+  azs                 = slice(data.aws_availability_zones.available.names, 0, length(data.aws_availability_zones.available.names))
+  vpc_cidr            = "10.0.0.0/16"
+  private_subnets     = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets      = ["10.0.4.0/24", "10.0.5.0/24"]
+  route_table_cidr    = "0.0.0.0/0"
+  storage             = "20" 
+  engine_version      = "8.0"
+  engine              = "mysql"
+  instance_class      = "db.t3.micro"
+  db_name             = "Application"
+  username            = "Application"
+  password            = "Application"
+  db_subnet_gn        = "main-subnet-group-sq1"
+  lb_name             = "Saad-Alb"  
+  lbt                 = "application"
+  target_group_name   = "Saad-Alb-TG"
+  health_check_path   = "/items"
+  app_port            = 3000
+  cluster_name        = "Saad-EKS-Cluster"
+  cluster_version     = "1.32"
+  instance_types      = ["t3.micro"]
+  node_group_name     = "Saad-Node-Group"
+  capacity_type       = "SPOT"
+  ami_type            = "AL2023_x86_64_STANDARD"
+  min_size            = 1
+  max_size            = 2
+  desired_size        = 1
+  name_prefix_lb      = "LB-SG"
+  name_prefix_web     = "APP-SG"
+  name_prefix_db      = "DB-SG"
+  secret_name         = "Saad-Secret-sq1"
+  db_username         = "Application"
+  db_password         = "Application"
+}
