@@ -35,6 +35,10 @@ jobs:
           docker build -t $ECR_REPO:$IMAGE_TAG .
           docker push $ECR_REPO:$IMAGE_TAG
 
+      - name: Print image URL
+        run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
+
+
       # - name: Set up kubectl
       #   uses: azure/setup-kubectl@v3
       #   with:
