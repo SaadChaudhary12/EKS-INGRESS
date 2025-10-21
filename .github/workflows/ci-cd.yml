@@ -15,8 +15,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
+
     steps:
-      - name: Checkout
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -25,18 +26,19 @@ jobs:
           role-to-assume: arn:aws:iam::489994096722:role/Saad-Trustpolicy-Role
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to ECR
-        id: ecr_login
+      - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ env.ECR_REPO%/* }}
+          ECR_REGISTRY="${ECR_REPO%/*}"
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
-      - name: Build, tag and push image
+      - name: Build, tag, and push Docker image
         run: |
           docker build -t $ECR_REPO:$IMAGE_TAG .
           docker push $ECR_REPO:$IMAGE_TAG
 
       - name: Print image URL
         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
+
 
 
       # - name: Set up kubectl
