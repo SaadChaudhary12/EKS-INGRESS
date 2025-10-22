@@ -13,14 +13,14 @@ locals {
   db_name             = "Application"
   username            = "Application"
   password            = "Application"
-  db_subnet_gn        = "main-subnet-group-sq1"
+  db_subnet_gn        = "main-subnet-group-sq12"
   lb_name             = "Saad-Alb"  
   lbt                 = "application"
   target_group_name   = "Saad-Alb-TG"
   health_check_path   = "/items"
   app_port            = 3000
   cluster_name        = "Saad-EKS-Cluster"
-  cluster_version     = "1.32"
+  cluster_version     = "1.33"
   instance_types      = ["t3.micro"]
   node_group_name     = "Saad-Node-Group"
   capacity_type       = "SPOT"
@@ -31,7 +31,7 @@ locals {
   name_prefix_lb      = "LB-SG"
   name_prefix_web     = "APP-SG"
   name_prefix_db      = "DB-SG"
-  secret_name         = "Saad-Secret-sq1"
+  secret_name         = "Saad-Secret-sq12"
   db_username         = "Application"
   db_password         = "Application"
 }

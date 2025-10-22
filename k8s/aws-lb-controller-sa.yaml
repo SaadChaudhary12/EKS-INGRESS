@@ -8,8 +8,6 @@ metadata:
     eks.amazonaws.com/role-arn: arn:aws:iam::489994096722:role/eks-aws-lb-controller-role-Saad-EKS-Cluster
 
 
-
-
 # Use helm to install it (commands to run in your shell after kubeconfig):
 
 # kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"

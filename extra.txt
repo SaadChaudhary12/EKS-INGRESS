@@ -11,3 +11,4 @@
       #   run: |
       #     kubectl set image deployment/app-deployment app-container=${ECR_REPO}:${IMAGE_TAG} --namespace default
       #     kubectl rollout status deployment/app-deployment --namespace default -w
+      

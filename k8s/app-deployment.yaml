@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: app-container
-          image: <<<ECR_REPO_URL>>>:latest   # replace with actual ECR image tag
+          image: <<<ECR_REPO_URL>>>:latest
           ports:
             - containerPort: 3000
           env:
             - name: DB_HOST
-              value: "<RDS_ENDPOINT>"      # replace with your RDS endpoint
+              value: "<RDS_ENDPOINT>"
             - name: DB_PORT
               value: "3306"
             - name: DB_USER

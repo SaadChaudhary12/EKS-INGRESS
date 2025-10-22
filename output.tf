@@ -14,6 +14,6 @@ output "public_subnets" {
   value = module.vpc.public_ids
 }
 
-# output "endpoint" {
-#   value = module.rds.endpoint
-# }
+output "endpoint" {
+  value = module.rds.endpoint
+}
