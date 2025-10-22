@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# system deps if needed (e.g., mysql client)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential default-libmysqlclient-dev libssl-dev gcc \
   && rm -rf /var/lib/apt/lists/*
