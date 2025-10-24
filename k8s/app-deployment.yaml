@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: app-container
-          image: <<<ECR_REPO_URL>>>:latest
+          image: 489994096722.dkr.ecr.us-east-2.amazonaws.com/task2-app:latest
           ports:
             - containerPort: 3000
           env:
             - name: DB_HOST
-              value: "<RDS_ENDPOINT>"
+              value: "terraform-20251024094855587000000006.cozzdxzyun2d.us-east-2.rds.amazonaws.com"
             - name: DB_PORT
               value: "3306"
             - name: DB_USER
