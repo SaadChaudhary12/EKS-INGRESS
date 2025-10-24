@@ -12,3 +12,33 @@
       #     kubectl set image deployment/app-deployment app-container=${ECR_REPO}:${IMAGE_TAG} --namespace default
       #     kubectl rollout status deployment/app-deployment --namespace default -w
       
+
+
+
+      if git push fails to these stepss
+
+      # Stop tracking the .terraform folder
+      git rm -r --cached .terraform
+
+      # Add it to .gitignore so it won’t be pushed again
+      echo ".terraform/" >> .gitignore
+      echo "*.tfstate" >> .gitignore
+      echo "*.tfstate.backup" >> .gitignore
+      echo ".terraform.lock.hcl" >> .gitignore
+
+      git add .gitignore
+      git commit -m "Remove .terraform directory and ignore it"
+
+      pip install git-filter-repo
+
+      git filter-repo --path .terraform --invert-paths
+
+      git push origin main --force
+
+      git remote -v
+
+      git remote add origin https://github.com/SaadChaudhary12/EKS-INGRESS.git
+
+      git push -u origin main --force
+
+      
