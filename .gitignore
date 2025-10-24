@@ -9,4 +9,6 @@ __pycache__/
 .idea/
 .env
 venv/
+crash.log
+*.tfvars
 " > .gitignore
