@@ -21,8 +21,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      # ✅ Use latest version for AWS credentials action
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::489994096722:role/Saad-Trustpolicy-Role
           aws-region: ${{ env.AWS_REGION }}
@@ -40,19 +41,20 @@ jobs:
       - name: Print image URL
         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Update kubeconfig
+      - name: Install kubectl
         run: |
-            aws eks update-kubeconfig --region $AWS_REGION --name Saad-EKS-Cluster
+          curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.33.5/2024-10-09/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+          kubectl version --client
 
-      - name: Deploy to k8s (update image)
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig --region $AWS_REGION --name Saad-EKS-Cluster
+          kubectl config current-context
+          kubectl get nodes
+
+      - name: Deploy to Kubernetes
         run: |
           kubectl set image deployment/app-deployment app-container=${ECR_REPO}:${IMAGE_TAG} --namespace default
           kubectl rollout status deployment/app-deployment --namespace default -w
-
-
-
