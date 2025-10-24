@@ -42,7 +42,7 @@ jobs:
 
       - name: Install kubectl (EKS compatible)
         run: |
-          KUBECTL_VERSION=$(aws eks describe-cluster --name Saad-EKS-Cluster --region $AWS_REGION --query "cluster.version" --output text)
+          KUBECTL_VERSION=$(aws eks describe-cluster --name Saad-EKS-Cluster --region $AWS_REGION --query "1.33" --output text)
           echo "Installing kubectl version $KUBECTL_VERSION"
           curl -LO "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
           chmod +x kubectl
