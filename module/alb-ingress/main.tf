@@ -9,7 +9,6 @@ data "aws_eks_cluster_auth" "cluster" {
 # Kubernetes & Helm provider configuration using remote state outputs
 provider "kubernetes" {
   host = data.terraform_remote_state.eks.outputs.cluster_endpoint
-  # cluster_ca_data is base64 encoded in remote state; decode it for provider
   cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_ca_data)
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
