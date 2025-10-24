@@ -1,6 +1,6 @@
 locals {
   name                = "Saad-Vpc"
-  region              = "us-east-1"
+  region              = "us-east-2"
   azs                 = slice(data.aws_availability_zones.available.names, 0, length(data.aws_availability_zones.available.names))
   vpc_cidr            = "10.0.0.0/16"
   private_subnets     = ["10.0.1.0/24", "10.0.2.0/24"]
@@ -13,7 +13,7 @@ locals {
   db_name             = "Application"
   username            = "Application"
   password            = "Application"
-  db_subnet_gn        = "main-subnet-group-sq12"
+  db_subnet_gn        = "main-subnet-group-sq1234"
   lb_name             = "Saad-Alb"  
   lbt                 = "application"
   target_group_name   = "Saad-Alb-TG"
@@ -31,7 +31,7 @@ locals {
   name_prefix_lb      = "LB-SG"
   name_prefix_web     = "APP-SG"
   name_prefix_db      = "DB-SG"
-  secret_name         = "Saad-Secret-sq12"
+  secret_name         = "Saad-Secret-sq1234"
   db_username         = "Application"
   db_password         = "Application"
 }

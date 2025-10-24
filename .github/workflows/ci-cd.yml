@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  AWS_REGION: us-east-1
-  ECR_REPO: 489994096722.dkr.ecr.us-east-1.amazonaws.com/task2-app
+  AWS_REGION: us-east-2
+  ECR_REPO: 489994096722.dkr.ecr.us-east-2.amazonaws.com/task2-app
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -39,6 +39,8 @@ jobs:
 
       - name: Print image URL
         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
+
+        
 
 
 

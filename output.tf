@@ -17,3 +17,31 @@ output "public_subnets" {
 output "endpoint" {
   value = module.rds.endpoint
 }
+
+output "cluster_name" {
+  value = module.eks.cluster_name
+}
+
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
+}
+
+output "node_group_name" {
+  value = module.eks.node_group_name
+}
+
+output "cluster_role_arn" {
+  value = module.eks.cluster_role_arn
+}
+
+output "oidc_provider_url" {
+  value = module.eks.oidc_provider_url
+}
+
+output "oidc_provider_arn" {
+  value = module.eks.oidc_provider_arn
+}
+
+output "cluster_ca_data" {
+  value = module.eks.cluster_ca_data
+}

@@ -2,7 +2,7 @@
 #   backend = "s3"
 #   config = {
 #     bucket = "saad-terraform-bucket"
-#     key    = "EKS-INGRESS/module/vpc/terraform.tfstate"
+#     key    = "EKS-INGRESS/terraform.tfstate"
 #     region = "us-east-1"
 #   }
 # }

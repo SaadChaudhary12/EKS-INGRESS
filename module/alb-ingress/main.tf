@@ -2,14 +2,26 @@
 # AWS LOAD BALANCER CONTROLLER (ALB INGRESS)
 ################################################################################
 
-# OIDC provider for the cluster
-data "aws_eks_cluster" "this" {
-  name = var.cluster_name
+data "aws_eks_cluster_auth" "cluster" {
+  name = data.terraform_remote_state.eks.outputs.cluster_name
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = var.cluster_name
+# Kubernetes & Helm provider configuration using remote state outputs
+provider "kubernetes" {
+  host = data.terraform_remote_state.eks.outputs.cluster_endpoint
+  # cluster_ca_data is base64 encoded in remote state; decode it for provider
+  cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_ca_data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
+
+provider "helm" {
+  kubernetes = {
+    host                   = data.terraform_remote_state.eks.outputs.cluster_endpoint
+    cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_ca_data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
+  }
+}
+
 
 data "aws_iam_policy_document" "alb_controller_assume_role_policy" {
   statement {
@@ -59,31 +71,31 @@ resource "helm_release" "aws_load_balancer_controller" {
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
+  timeout    = 600
 
-  set {
-    name  = "clusterName"
-    value = var.cluster_name
-  }
-
-  set {
-    name  = "serviceAccount.create"
-    value = "false"
-  }
-
-  set {
-    name  = "serviceAccount.name"
-    value = kubernetes_service_account.alb_controller_sa.metadata[0].name
-  }
-
-  set {
-    name  = "region"
-    value = var.region
-  }
-
-  set {
-    name  = "vpcId"
-    value = var.vpc_id
-  }
+  set = [
+    {
+      name  = "clusterName"
+      value = var.cluster_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = "false"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = kubernetes_service_account.alb_controller_sa.metadata[0].name
+    },
+    {
+      name  = "region"
+      value = var.region
+    },
+    {
+      name  = "vpcId"
+      value = var.vpc_id
+    }
+  ]
 
   depends_on = [kubernetes_service_account.alb_controller_sa]
 }
+
