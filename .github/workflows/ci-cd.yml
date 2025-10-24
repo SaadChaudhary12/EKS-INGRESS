@@ -21,7 +21,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # ✅ Use latest version for AWS credentials action
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,12 +40,15 @@ jobs:
       - name: Print image URL
         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
 
-      - name: Install kubectl
+      - name: Install kubectl (EKS compatible)
         run: |
-          curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.33.5/2024-10-09/bin/linux/amd64/kubectl
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
+          KUBECTL_VERSION=$(aws eks describe-cluster --name Saad-EKS-Cluster --region $AWS_REGION --query "cluster.version" --output text)
+          echo "Installing kubectl version $KUBECTL_VERSION"
+          curl -LO "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
           kubectl version --client
+
 
       - name: Update kubeconfig for EKS
         run: |
