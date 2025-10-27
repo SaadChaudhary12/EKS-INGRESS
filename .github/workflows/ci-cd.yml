@@ -112,10 +112,18 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/kubectl
 
+      - name: Debug caller identity
+        run: |
+          echo "Verifying assumed role identity..."
+          aws sts get-caller-identity
+
       - name: Update kubeconfig for EKS cluster
         run: |
           rm -rf ~/.kube/config
-          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }} --verbose
+          echo "==== Kubeconfig contents ===="
+          cat ~/.kube/config
+          echo "==== Test cluster-info ===="
           kubectl cluster-info
 
       - name: Verify EKS connection
@@ -137,4 +145,4 @@ jobs:
           kubectl get ingress || true
 
 
-          
+
