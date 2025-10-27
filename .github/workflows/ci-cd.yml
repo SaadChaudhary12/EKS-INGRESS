@@ -144,6 +144,8 @@ jobs:
           kubectl get svc -o wide
           kubectl get ingress || true
 
-
-
           
+
+
+
+
