@@ -123,15 +123,15 @@ module "secrets_manager" {
 ################################################################################
 
 
- module "alb_ingress" {
+module "alb_ingress" {
   source              = "./module/alb-ingress"
-  # depends_on          = [module.eks]
   cluster_name        = module.eks.cluster_name
+  cluster_endpoint    = module.eks.cluster_endpoint
+  cluster_ca_data     = module.eks.cluster_ca_data
+  oidc_provider_url   = module.eks.oidc_provider_url
+  oidc_provider_arn   = module.eks.oidc_provider_arn
   vpc_id              = module.vpc.vpc_id
   region              = local.region
-  oidc_provider_url = module.eks.oidc_provider_url
-  oidc_provider_arn = module.eks.oidc_provider_arn
-  
 }
 
 

@@ -21,7 +21,7 @@ spec:
             - containerPort: 3000
           env:
             - name: DB_HOST
-              value: "terraform-20251024094855587000000006.cozzdxzyun2d.us-east-2.rds.amazonaws.com"
+              value: "terraform-20251027094124891200000006.cozzdxzyun2d.us-east-2.rds.amazonaws.com"
             - name: DB_PORT
               value: "3306"
             - name: DB_USER

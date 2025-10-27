@@ -1,6 +1,9 @@
 variable "cluster_name" {}
 variable "vpc_id" {}
 variable "region" {}
+variable "cluster_endpoint" {}
+variable "cluster_ca_data" {}
+
 variable "tags" {
   type    = map(string)
   default = {}
