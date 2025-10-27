@@ -143,9 +143,3 @@ jobs:
           kubectl get deployment "$DEPLOYMENT_NAME" -o wide
           kubectl get svc -o wide
           kubectl get ingress || true
-
-          
-
-
-
-

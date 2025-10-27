@@ -26,7 +26,7 @@ locals {
   capacity_type       = "SPOT"
   ami_type            = "AL2023_x86_64_STANDARD"
   min_size            = 1
-  max_size            = 4
+  max_size            = 5
   desired_size        = 3
   name_prefix_lb      = "LB-SG"
   name_prefix_web     = "APP-SG"
