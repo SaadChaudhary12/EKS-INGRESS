@@ -106,7 +106,7 @@ jobs:
 
       - name: Build and push Docker image to ECR
         run: |
-          docker build -t ${{ env.ECR_REPO }}:${{ env.IMAGE_TAG }} .
+          docker build -t ${{ env.ECR_REPO }}:${{ env.IMAGE_TAG }} ./src
           docker push ${{ env.ECR_REPO }}:${{ env.IMAGE_TAG }}
 
       - name: Install kubectl
