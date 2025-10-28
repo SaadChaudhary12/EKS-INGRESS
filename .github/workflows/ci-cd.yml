@@ -2,8 +2,6 @@ name: CI/CD - Build & Deploy (ECR → EKS)
 
 on:
   pull_request:
-    branches:
-      - prod
 
 env:
   AWS_REGION: us-east-2
