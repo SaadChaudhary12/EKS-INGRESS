@@ -64,9 +64,9 @@
 name: CI/CD - Build & Deploy (ECR → EKS)
 
 on:
-  push:
+  pull_request:
     branches:
-      - main
+      - prod
 
 env:
   AWS_REGION: us-east-2
@@ -101,47 +101,45 @@ jobs:
           ECR_REGISTRY="${ECR_REPO%/*}"
           aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
-      - name: Build, tag, and push Docker image
-        run: |
-          docker build -t "$ECR_REPO:$IMAGE_TAG" ./src
-          docker push "$ECR_REPO:$IMAGE_TAG"
+      # - name: Build, tag, and push Docker image
+      #   run: |
+      #     docker build -t "$ECR_REPO:$IMAGE_TAG" ./src
+      #     docker push "$ECR_REPO:$IMAGE_TAG"
 
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/kubectl
+      # - name: Install kubectl
+      #   run: |
+      #     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      #     chmod +x kubectl
+      #     sudo mv kubectl /usr/local/bin/kubectl
 
-      - name: Debug caller identity
-        run: |
-          echo "Verifying assumed role identity..."
-          aws sts get-caller-identity
+      # - name: Debug caller identity
+      #   run: |
+      #     echo "Verifying assumed role identity..."
+      #     aws sts get-caller-identity
 
-      - name: Update kubeconfig for EKS cluster
-        run: |
-          rm -rf ~/.kube/config
-          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }} --verbose
-          echo "==== Kubeconfig contents ===="
-          cat ~/.kube/config
-          echo "==== Test cluster-info ===="
-          kubectl cluster-info
+      # - name: Update kubeconfig for EKS cluster
+      #   run: |
+      #     rm -rf ~/.kube/config
+      #     aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }} --verbose
+      #     echo "==== Kubeconfig contents ===="
+      #     cat ~/.kube/config
+      #     echo "==== Test cluster-info ===="
+      #     kubectl cluster-info
 
-      - name: Verify EKS connection
-        run: |
-          kubectl get nodes -o wide
-          kubectl get pods -A || true  # continue even if no pods yet
+      # - name: Verify EKS connection
+      #   run: |
+      #     kubectl get nodes -o wide
+      #     kubectl get pods -A || true  # continue even if no pods yet
 
-      - name: Deploy to EKS (update image)
-        run: |
-          kubectl set image deployment/"$DEPLOYMENT_NAME" \
-            "$CONTAINER_NAME"="$ECR_REPO":"$IMAGE_TAG" --record
-          kubectl rollout status deployment/"$DEPLOYMENT_NAME" --timeout=180s
-          echo "Deployment updated successfully."
+      # - name: Deploy to EKS (update image)
+      #   run: |
+      #     kubectl set image deployment/"$DEPLOYMENT_NAME" \
+      #       "$CONTAINER_NAME"="$ECR_REPO":"$IMAGE_TAG" --record
+      #     kubectl rollout status deployment/"$DEPLOYMENT_NAME" --timeout=180s
+      #     echo "Deployment updated successfully."
 
-      - name: Verify deployment & service
-        run: |
-          kubectl get deployment "$DEPLOYMENT_NAME" -o wide
-          kubectl get svc -o wide
-          kubectl get ingress || true
-
-          
+      # - name: Verify deployment & service
+      #   run: |
+      #     kubectl get deployment "$DEPLOYMENT_NAME" -o wide
+      #     kubectl get svc -o wide
+      #     kubectl get ingress || true

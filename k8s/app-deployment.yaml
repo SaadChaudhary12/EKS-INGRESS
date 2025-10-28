@@ -14,7 +14,7 @@ spec:
       labels:
         app: task2-app
     spec:
-      serviceAccountName: app-service-account
+      serviceAccountName: app-sa
       containers:
         - name: app-container
           image: 489994096722.dkr.ecr.us-east-2.amazonaws.com/task2-app:1ca1f87e901988066ecb4ec29c20ccb04d328a62
