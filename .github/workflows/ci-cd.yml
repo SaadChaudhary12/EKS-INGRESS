@@ -1,73 +1,9 @@
-# name: CI/CD - Build & Deploy to EKS
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# env:
-#   AWS_REGION: us-east-2
-#   ECR_REPO: 489994096722.dkr.ecr.us-east-2.amazonaws.com/task2-app
-#   IMAGE_TAG: ${{ github.sha }}
-
-# jobs:
-#   build_and_push:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#       id-token: write
-
-#     steps:
-#       - name: Checkout source code
-#         uses: actions/checkout@v4
-
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           role-to-assume: arn:aws:iam::489994096722:role/Saad-Trustpolicy-Role
-#           aws-region: ${{ env.AWS_REGION }}
-
-      # - name: Login to Amazon ECR
-      #   run: |
-      #     ECR_REGISTRY="${ECR_REPO%/*}"
-      #     aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-
-      # - name: Build, tag, and push Docker image
-      #   run: |
-      #     docker build -t $ECR_REPO:$IMAGE_TAG ./src
-      #     docker push $ECR_REPO:$IMAGE_TAG
-
-#       - name: Print image URL
-#         run: echo "Image pushed to $ECR_REPO:$IMAGE_TAG"
-
-#       - name: Install kubectl (EKS compatible)
-#         run: |
-#           KUBECTL_VERSION=$(aws eks describe-cluster --name Saad-EKS-Cluster --region $AWS_REGION --query "cluster.version" --output text)
-#           echo "Installing kubectl version $KUBECTL_VERSION"
-#           curl -LO "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-#           chmod +x kubectl
-#           sudo mv kubectl /usr/local/bin/
-#           kubectl version --client
-
-
-#       - name: Update kubeconfig for EKS
-#         run: |
-#           aws eks update-kubeconfig --region $AWS_REGION --name Saad-EKS-Cluster
-#           kubectl config current-context
-#           kubectl get nodes
-
-#       - name: Deploy to Kubernetes
-#         run: |
-#           kubectl set image deployment/app-deployment app-container=${ECR_REPO}:${IMAGE_TAG} --namespace default
-#           kubectl rollout status deployment/app-deployment --namespace default -w
-
 name: CI/CD - Build & Deploy (ECR → EKS)
 
 on:
-  pull_request:
+  push:
     branches:
-    
-      - prod
+      - main
 
 env:
   AWS_REGION: us-east-2
@@ -102,10 +38,10 @@ jobs:
           ECR_REGISTRY="${ECR_REPO%/*}"
           aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
-      # - name: Build, tag, and push Docker image
-      #   run: |
-      #     docker build -t "$ECR_REPO:$IMAGE_TAG" ./src
-      #     docker push "$ECR_REPO:$IMAGE_TAG"
+      - name: Build, tag, and push Docker image
+        run: |
+          docker build -t "$ECR_REPO:$IMAGE_TAG" ./src
+          docker push "$ECR_REPO:$IMAGE_TAG"
 
       # - name: Install kubectl
       #   run: |
@@ -144,3 +80,4 @@ jobs:
       #     kubectl get deployment "$DEPLOYMENT_NAME" -o wide
       #     kubectl get svc -o wide
       #     kubectl get ingress || true
+
