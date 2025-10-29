@@ -42,7 +42,7 @@ module "rds" {
 
 resource "aws_db_subnet_group" "mains" {
   name                 = local.db_subnet_gn
-  subnet_ids           = module.vpc.private_ids
+  subnet_ids           = module.vpc.public_ids
 }
 
 ################################################################################

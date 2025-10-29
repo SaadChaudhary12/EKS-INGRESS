@@ -13,7 +13,7 @@ locals {
   db_name             = "Application"
   username            = "Application"
   password            = "Application"
-  db_subnet_gn        = "main-subnet-group-sq9"
+  db_subnet_gn        = "main-subnet-group-sq10"
   lb_name             = "Saad-Alb"  
   lbt                 = "application"
   target_group_name   = "Saad-Alb-TG"
@@ -31,7 +31,7 @@ locals {
   name_prefix_lb      = "LB-SG"
   name_prefix_web     = "APP-SG"
   name_prefix_db      = "DB-SG"
-  secret_name         = "Saad-Secret-sq9"
+  secret_name         = "Saad-Secret-sq10"
   db_username         = "Application"
   db_password         = "Application"
 }

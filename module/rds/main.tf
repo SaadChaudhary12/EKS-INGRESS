@@ -11,7 +11,7 @@ resource "aws_db_instance" "this" {
   db_name                = var.db_name
   username               = var.username
   password               = var.password
-  publicly_accessible    = false
+  publicly_accessible    = true
   vpc_security_group_ids = [var.db_sg_id]
   db_subnet_group_name   = var.db_subnet_group_name
 
